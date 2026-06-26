@@ -17,20 +17,23 @@ on:
       - 'k8s/**'
 
 jobs:
-  security_scan:
+ security_scan:
     name: Infrastructure & Code Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run Checkov Vulnerability Scan
-        uses: bridgecrewio/checkov-action@v12
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          framework: terraform
-          external_checks_dirs: .
-          output_format: cli
-          soft_fail: true 
+          python-version: '3.11'
+
+      - name: Install Checkov
+        run: pip install checkov
+
+      - name: Run Checkov
+        run: checkov -d . --soft-fail --framework terraform kubernetes
 
   build_and_push:
     name: Build, Scan and Push Images
