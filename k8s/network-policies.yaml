@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-allow-backend-only
+  namespace: blogapp
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: blogapp-db
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: blogapp-backend
+      ports:
+        - port: 5432
+          protocol: TCP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-allow-frontend-only
+  namespace: blogapp
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: blogapp-backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: blogapp-frontend
+      ports:
+        - port: 5000
+          protocol: TCP

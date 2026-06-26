@@ -1,0 +1,106 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: blogapp-disk-sc
+provisioner: disk.csi.azure.com
+parameters:
+  skuName: StandardSSD_LRS # خيار اقتصادي وممتاز لاشتراك الطلاب
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blogapp-db-pvc
+  namespace: blogapp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: blogapp-disk-sc
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogapp-db
+  namespace: blogapp
+  labels:
+    app.kubernetes.io/name: blogapp-db
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: blogapp-db
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: blogapp-db
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: postgres
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_USER
+              value: "blogapp_user"
+            - name: POSTGRES_DB
+              value: "blogapp_db"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-db-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: pgdata
+            # خطوة أمنية وتشغيلية مهمة: عمل Mount لنفق الأسرار جوه الحاوية
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+      volumes:
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: blogapp-db-pvc
+        # تعريف نفق الأسرار للـ Key Vault
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "blogapp-kv-secret-provider"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blogapp-db
+  namespace: blogapp
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: blogapp-db
+  ports:
+    - port: 5432
+      targetPort: 5432
