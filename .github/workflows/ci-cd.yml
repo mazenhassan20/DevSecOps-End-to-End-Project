@@ -34,7 +34,7 @@ jobs:
 
       - name: Run Checkov
         run: |
-          checkov -d . --soft-fail --no-guide --quiet
+          checkov -d . --soft-fail --no-guide --quiet --config-file ./.github/checkov-ci.yaml
   build_and_push:
     name: Build, Scan and Push Images
     needs: security_scan 
