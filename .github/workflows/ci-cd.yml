@@ -17,7 +17,7 @@ on:
       - 'k8s/**'
 
 jobs:
-   security_scan:
+  security_scan:
     name: Infrastructure & Code Scan
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +30,7 @@ jobs:
           framework: terraform,kubernetes
           output_format: cli
           soft_fail: true 
+
   build_and_push:
     name: Build, Scan and Push Images
     needs: security_scan 
@@ -37,13 +38,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
      
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       
       - name: Login to Azure Container Registry
         run: az acr login --name blogappregistry2026
@@ -56,7 +55,7 @@ jobs:
         with:
           image-ref: 'blogappregistry2026.azurecr.io/backend:${{ github.sha }}'
           format: 'table'
-          exit-code: '0' # غيره لـ 1 لو عايز البايبلاين يضرب لو لقى ثغرات خطيرة High/Critical
+          exit-code: '0'
           severity: 'CRITICAL,HIGH'
 
       - name: Push Backend Image to ACR
