@@ -4,7 +4,7 @@ metadata:
   name: blogapp-disk-sc
 provisioner: disk.csi.azure.com
 parameters:
-  skuName: StandardSSD_LRS # خيار اقتصادي وممتاز لاشتراك الطلاب
+  skuName: StandardSSD_LRS 
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
@@ -65,7 +65,6 @@ spec:
             - name: db-storage
               mountPath: /var/lib/postgresql/data
               subPath: pgdata
-            # خطوة أمنية وتشغيلية مهمة: عمل Mount لنفق الأسرار جوه الحاوية
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
               readOnly: true
@@ -83,7 +82,6 @@ spec:
         - name: db-storage
           persistentVolumeClaim:
             claimName: blogapp-db-pvc
-        # تعريف نفق الأسرار للـ Key Vault
         - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io
