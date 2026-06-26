@@ -30,7 +30,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Checkov
-        run: pip install checkov
+        run: pip install checkov==3.2.19
 
       - name: Run Checkov
         run: checkov -d . --soft-fail --framework terraform kubernetes
