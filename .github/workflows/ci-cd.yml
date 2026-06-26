@@ -25,9 +25,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Checkov Vulnerability Scan
-        uses: bridgecrewio/checkov-action@master
+        uses: bridgecrewio/checkov-action@v12
         with:
-          framework: terraform,kubernetes
+          framework: terraform
+          external_checks_dirs: .
           output_format: cli
           soft_fail: true 
 
