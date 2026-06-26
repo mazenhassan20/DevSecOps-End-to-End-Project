@@ -17,7 +17,7 @@ on:
       - 'k8s/**'
 
 jobs:
- security_scan:
+  security_scan:
     name: Infrastructure & Code Scan
     runs-on: ubuntu-latest
     steps:
