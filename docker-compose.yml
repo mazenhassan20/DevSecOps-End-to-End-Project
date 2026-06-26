@@ -13,7 +13,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      # تم ربط الـ Healthcheck بالمتغيرات عشان ميضربش لو غيرت اسم اليوزر أو الداتا بيز
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
