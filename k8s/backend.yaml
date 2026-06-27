@@ -71,7 +71,6 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "blogapp-kv-secret-provider"
-
 ---
 apiVersion: v1
 kind: Service
