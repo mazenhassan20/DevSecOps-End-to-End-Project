@@ -30,7 +30,7 @@ spec:
               done
       containers:
         - name: backend
-          image: blogappregistry2026.azurecr.io/backend:v1
+          image: blogappregistry2026.azurecr.io/backend:1fa6f3ab0c6d6b1db547e59f9a7474af78b34f5e
           ports:
             - containerPort: 5000
           env:
