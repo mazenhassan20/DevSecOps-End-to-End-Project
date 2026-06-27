@@ -8,7 +8,6 @@ parameters:
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,7 +21,6 @@ spec:
   resources:
     requests:
       storage: 10Gi
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -88,7 +86,6 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "blogapp-kv-secret-provider"
-
 ---
 apiVersion: v1
 kind: Service
