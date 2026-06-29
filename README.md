@@ -99,8 +99,6 @@ DevSecOps-End-to-End-Project/
     ├── workflows/ci-cd.yml      # The pipeline
     └── checkov-ci.yaml          # Checkov skip-path config
 ```
-![Uploading ChatGPT Image Jun 27, 2026, 06_19_40 PM.png…]()
-
 > Resource names used throughout this README match what was actually deployed: resource group **`blogapp-sec-rg`**, AKS cluster **`blogapp-aks`**, ACR **`blogappregistry2026`**, Key Vault **`blogapp-kv-fsx3`**, namespace **`blogapp`**. `terraform/variables.tf` defaults to `blogapp-rg` — this deployment overrode it with a local (git-ignored) `terraform.tfvars`. Swap in your own names if you fork this.
 
 ---
